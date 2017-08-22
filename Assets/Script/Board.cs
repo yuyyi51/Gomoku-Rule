@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+    public GameController gameController;
     private Vector2 TL;             //top-left
     private Vector2 TR;             //top-right
     private Vector2 DL;             //down-left
@@ -17,6 +18,10 @@ public class Board : MonoBehaviour
     private GameObject[,] nodes = new GameObject[19,19];
     private GameObject[,] pieces = new GameObject[19,19];
     private int[,] data = new int[19, 19];
+    private Rule gameRule;
+    public int ruleNum;
+    private bool operable ;
+    public enum PicecColor { Black = 1, White = 2 };
 
     //Begin from top-left
     //Left to right
@@ -46,11 +51,27 @@ public class Board : MonoBehaviour
                 nodes[i,j] = obj;
             }
         }
+        switch(ruleNum)
+        {
+            case 1:
+                gameObject.AddComponent<NormalRule>();
+                gameRule = gameObject.GetComponent<Rule>();
+                break;
+            default:
+                gameObject.AddComponent<NormalRule>();
+                gameRule = gameObject.GetComponent<Rule>();
+                break;
+        }
+        gameRule.Init(this);
+        gameObject.GetComponentInParent<GameController>().gameRule = gameRule;
         _init = true;
+        operable = true;
     }
 
     private void ApplyPlace(object[] obj)
     {
+        if (!operable)
+            return;
         int cox = -1, coy = -1;
         if(obj[0] is int)
         {
@@ -65,9 +86,12 @@ public class Board : MonoBehaviour
         GameObject o = Instantiate(piece[turn % 2], pos, gameObject.transform.rotation, gameObject.transform);
         pieces[cox, coy] = o;
         data[cox, coy] = turn % 2 + 1;
-        //nodes[cox, coy].GetComponent<Highlight>().placed = true;
-
+        nodes[cox, coy].GetComponent<Highlight>().placed = true;
+        nodes[cox, coy].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+        gameRule.CheckByCoordinate(cox, coy);
+        gameController.Change();
         turn++;
+        
     }
 
     public int GetPieceByCoordinate(int x, int y)
@@ -91,11 +115,7 @@ public class Board : MonoBehaviour
         return nodes[x, y];
     }
 
-    public List<GameObject> CheckByCoordinate(int x, int y)
-    {
-        int tx = x, ty = y;
-
-    }
+    
     // Use this for initialization
     void Start()
     {

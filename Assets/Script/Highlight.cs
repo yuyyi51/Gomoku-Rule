@@ -59,8 +59,6 @@ public class Highlight : MonoBehaviour
         obj[0] = x;
         obj[1] = y;
         SendMessageUpwards("ApplyPlace", obj, SendMessageOptions.RequireReceiver);
-        placed = true;
-        gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
     }
     // Update is called once per frame
     void Update()
