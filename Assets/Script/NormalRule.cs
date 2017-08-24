@@ -7,7 +7,7 @@ public class NormalRule : Rule
 {
     new protected const string ruleName = "普通模式";
 
-    protected override int MoveByDelta(int x, int y, int dx, int dy, int co)
+    protected int MoveByDelta(int x, int y, int dx, int dy, int co)
     {
         int re = 0;
         int tx = x + dx;

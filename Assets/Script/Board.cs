@@ -57,6 +57,10 @@ public class Board : MonoBehaviour
                 gameObject.AddComponent<NormalRule>();
                 gameRule = gameObject.GetComponent<Rule>();
                 break;
+            case 2:
+                gameObject.AddComponent<ExplosiveRule>();
+                gameRule = gameObject.GetComponent<Rule>();
+                break;
             default:
                 gameObject.AddComponent<NormalRule>();
                 gameRule = gameObject.GetComponent<Rule>();
@@ -115,6 +119,12 @@ public class Board : MonoBehaviour
         return nodes[x, y];
     }
 
+    public void RemovePiece(int x, int y)
+    {
+        Destroy(pieces[x, y]);
+        nodes[x, y].GetComponent<Highlight>().Reset();
+        data[x, y] = 0;
+    }
     
     // Use this for initialization
     void Start()

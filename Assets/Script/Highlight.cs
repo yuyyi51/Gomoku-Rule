@@ -18,6 +18,11 @@ public class Highlight : MonoBehaviour
         x = n1;
         y = n2;
     }
+    public void Reset()
+    {
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+        placed = false;
+    }
     // Use this for initialization
     void Start()
     {
