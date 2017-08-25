@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExplosiveRule : Rule
+public class NewRule : Rule
 {
     protected class Point
     {
@@ -21,7 +21,8 @@ public class ExplosiveRule : Rule
     }
     protected int mininum = 4;
     protected int maxdiff = 10;
-    new protected const string ruleName = "爆炸模式";
+    protected int[,] logicBoard = new int[19, 19];
+    new protected const string ruleName = "第二模式";
     public override void CheckAllBoard()
     {
         throw new NotImplementedException();
@@ -29,6 +30,7 @@ public class ExplosiveRule : Rule
     public override void CheckByCoordinate(int x, int y)
     {
         Debug.Log(ruleName + "按坐标运行");
+        int score = 0;
         int color = board.GetPieceByCoordinate(x, y);
         List<Point> t = new List<Point>();
         List<Point> t1 = null;
@@ -39,6 +41,8 @@ public class ExplosiveRule : Rule
         {
             t.AddRange(t1);
             t.AddRange(t2);
+            int c = t1.Count + t2.Count + 1;
+            score += c / mininum;
         }
         t1 = MoveByDelta(x, y, 0, 1, color);
         t2 = MoveByDelta(x, y, 0, -1, color);
@@ -46,6 +50,8 @@ public class ExplosiveRule : Rule
         {
             t.AddRange(t1);
             t.AddRange(t2);
+            int c = t1.Count + t2.Count + 1;
+            score += c / mininum;
         }
         t1 = MoveByDelta(x, y, 1, 1, color);
         t2 = MoveByDelta(x, y, -1, -1, color);
@@ -53,6 +59,8 @@ public class ExplosiveRule : Rule
         {
             t.AddRange(t1);
             t.AddRange(t2);
+            int c = t1.Count + t2.Count + 1;
+            score += c / mininum;
         }
         t1 = MoveByDelta(x, y, -1, 1, color);
         t2 = MoveByDelta(x, y, 1, -1, color);
@@ -60,15 +68,17 @@ public class ExplosiveRule : Rule
         {
             t.AddRange(t1);
             t.AddRange(t2);
+            int c = t1.Count + t2.Count + 1;
+            score += c / mininum;
         }
         if (t.Count > 0)
         {
             t.Add(new Point(x, y));
             if (color == (int)Board.PicecColor.Black)
-                SendMessageUpwards("AddBlackScore", t.Count, SendMessageOptions.RequireReceiver);
+                SendMessageUpwards("AddBlackScore", score, SendMessageOptions.RequireReceiver);
             if (color == (int)Board.PicecColor.White)
-                SendMessageUpwards("AddWhiteScore", t.Count, SendMessageOptions.RequireReceiver);
-            RemovePieces(t);
+                SendMessageUpwards("AddWhiteScore", score, SendMessageOptions.RequireReceiver);
+            DealPieces(t);
         }
     }
     public override int CheckVictoryCondition(int a, int b)
@@ -88,7 +98,7 @@ public class ExplosiveRule : Rule
         List<Point> re = new List<Point>();
         int tx = x + dx;
         int ty = y + dy;
-        while (board.GetPieceByCoordinate(tx, ty) == co)
+        while (board.GetPieceByCoordinate(tx, ty) == co && logicBoard[tx,ty] != 1)
         {
             re.Add(new Point(tx, ty));
             tx += dx;
@@ -96,11 +106,15 @@ public class ExplosiveRule : Rule
         }
         return re;
     }
-    protected void RemovePieces(List<Point> li)
+    protected void DealPieces(List<Point> li)
     {
-        foreach (Point p in li)
+        foreach(Point p in li)
         {
-            board.RemovePiece(p.x, p.y);
+            int x = p.x;
+            int y = p.y;
+            logicBoard[x, y] = 1;
+            GameObject obj = board.GetPieceObjectByCoordinate(x, y);
+            obj.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.3f);
         }
     }
 }

@@ -61,6 +61,10 @@ public class Board : MonoBehaviour
                 gameObject.AddComponent<ExplosiveRule>();
                 gameRule = gameObject.GetComponent<Rule>();
                 break;
+            case 3:
+                gameObject.AddComponent<NewRule>();
+                gameRule = gameObject.GetComponent<Rule>();
+                break;
             default:
                 gameObject.AddComponent<NormalRule>();
                 gameRule = gameObject.GetComponent<Rule>();
