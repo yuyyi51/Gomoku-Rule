@@ -100,7 +100,7 @@ public class Board : MonoBehaviour
     public void PlacePiece(int x, int y, int color)
     {
         Vector2 pos = GetVectorByCoordinate(x, y);
-        GameObject o = Instantiate(piece[color-1], pos, gameObject.transform.rotation);
+        GameObject o = (GameObject)Instantiate(piece[color-1], pos, gameObject.transform.rotation);
         o.transform.parent = gameObject.transform ;
         pieces[x, y] = o;
         data[x, y] = color;
