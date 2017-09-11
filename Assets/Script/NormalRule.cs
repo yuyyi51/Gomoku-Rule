@@ -6,7 +6,7 @@ using UnityEngine;
 public class NormalRule : Rule
 {
     new protected const string ruleName = "普通模式";
-
+    int num = 0;
     protected int MoveByDelta(int x, int y, int dx, int dy, int co)
     {
         int re = 0;
@@ -37,9 +37,17 @@ public class NormalRule : Rule
         if( max >= 5 )
         {
             if (color == (int)Board.PicecColor.Black)
+            {
                 SendMessageUpwards("AddBlackScore", 1, SendMessageOptions.RequireReceiver);
+                num = 1;
+            }
+
             if (color == (int)Board.PicecColor.White)
+            {
                 SendMessageUpwards("AddWhiteScore", 1, SendMessageOptions.RequireReceiver);
+                num = 2;
+            }
+
         }
     }
 
@@ -50,15 +58,8 @@ public class NormalRule : Rule
 
     public override int CheckVictoryCondition(int a, int b)
     {
-        Debug.Log(ruleName + "检查胜利条件");
-        if(a > b && a >= 1)
-        {
-            return 1;
-        }
-        else if( a < b && b >= 1)
-        {
-            return 2;
-        }
-        return 0;
+        int re = num;
+        num = 0;
+        return re;
     }
 }

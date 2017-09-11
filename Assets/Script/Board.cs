@@ -171,5 +171,8 @@ public class Board : MonoBehaviour
 
     }
 
-
+    public void Hold()
+    {
+        operable = false;
+    }
 }

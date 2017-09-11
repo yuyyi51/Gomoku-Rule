@@ -78,11 +78,13 @@ public class GameController : MonoBehaviour
             if (a == 1)
             {
                 Debug.Log("Black Win");
+                gameRule.Hold();
                 gameRule.Reset();
             }
             else if (a == 2)
             {
                 Debug.Log("White Win");
+                gameRule.Hold();
                 gameRule.Reset();
             }
 

@@ -21,6 +21,10 @@ public abstract class Rule : MonoBehaviour
     {
         board.Reset();
     }
+    public virtual void Hold()
+    {
+        board.Hold();
+    }
     public virtual void Init(Board b)
     {
         board = b;
