@@ -17,6 +17,10 @@ public abstract class Rule : MonoBehaviour
 	public abstract void CheckByCoordinate(int x, int y);
     public abstract void CheckAllBoard();
     public abstract int CheckVictoryCondition(int a, int b);
+    public virtual void Reset()
+    {
+        board.Reset();
+    }
     public virtual void Init(Board b)
     {
         board = b;

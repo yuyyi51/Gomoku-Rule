@@ -76,9 +76,16 @@ public class GameController : MonoBehaviour
         {
             a = gameRule.CheckVictoryCondition(blackScore, whiteScore);
             if (a == 1)
+            {
                 Debug.Log("Black Win");
+                gameRule.Reset();
+            }
             else if (a == 2)
+            {
                 Debug.Log("White Win");
+                gameRule.Reset();
+            }
+
         }
         changed = false;
 

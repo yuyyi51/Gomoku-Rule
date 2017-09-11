@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,7 +26,21 @@ public class Board : MonoBehaviour
 
     //Begin from top-left
     //Left to right
-    //Top to down
+    //Top to down    
+    public void Reset()
+    {
+        for(int i = 0; i != 19; ++i)
+        {
+            for(int j = 0; j != 19; ++j)
+            {
+                nodes[i, j].GetComponent<Highlight>().Reset();
+                Destroy(pieces[i, j]);
+            }
+        }
+        Array.Clear(data, 0, data.Length);
+        operable = true;
+        turn = 0;
+    }
     public Vector2 GetVectorByCoordinate(int x, int y)
     {
         Vector2 v2 = new Vector2();
@@ -155,4 +170,6 @@ public class Board : MonoBehaviour
     {
 
     }
+
+
 }
