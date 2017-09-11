@@ -31,15 +31,11 @@ public class Highlight : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (placed)
-            return;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
     }
 
     void OnMouseOver()
     {
-        if (placed)
-            return;
         if (gameObject.GetComponent<SpriteRenderer>().color.a >= 1.0)
             colorTrans = -1;
         if (gameObject.GetComponent<SpriteRenderer>().color.a <= 0.0)
@@ -49,15 +45,11 @@ public class Highlight : MonoBehaviour
 
     void OnMouseExit()
     {
-        if (placed)
-            return;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
     }
 
     void OnMouseDown()
     {
-        if (placed)
-            return;
         Debug.Log("Clicked:" + x + " " + y);
         //TODO
         object[] obj = new object[2];

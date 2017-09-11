@@ -858,7 +858,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u56DE\u5408\u6570"
+  m_Text: round
 --- !u!222 &1354242929
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1192,4 +1192,4 @@ MonoBehaviour:
   - {fileID: 1546468474471290, guid: 57f9d5b86b1c76c46946cd7fe2ad88e8, type: 2}
   - {fileID: 1598496459087418, guid: 28b3235b0ba5f20449890b906ef387a0, type: 2}
   turn: 0
-  ruleNum: 3
+  ruleNum: 1

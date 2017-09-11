@@ -34,6 +34,11 @@ public class Board : MonoBehaviour
         return v2;
     }
 
+    public bool IsLeagl(int x, int y)
+    {
+        return x >= 0 && x < 19 && y >= 0 && y < 19;
+    }
+
     public void Init()
     {
         if (_init)
@@ -55,25 +60,35 @@ public class Board : MonoBehaviour
         {
             case 1:
                 gameObject.AddComponent<NormalRule>();
-                gameRule = gameObject.GetComponent<Rule>();
                 break;
             case 2:
                 gameObject.AddComponent<ExplosiveRule>();
-                gameRule = gameObject.GetComponent<Rule>();
                 break;
             case 3:
                 gameObject.AddComponent<NewRule>();
-                gameRule = gameObject.GetComponent<Rule>();
+                break;
+            case 4:
+                gameObject.AddComponent<ItemRule>();
                 break;
             default:
                 gameObject.AddComponent<NormalRule>();
-                gameRule = gameObject.GetComponent<Rule>();
                 break;
         }
+        gameRule = gameObject.GetComponent<Rule>();
         gameRule.Init(this);
         gameObject.GetComponentInParent<GameController>().gameRule = gameRule;
         _init = true;
         operable = true;
+    }
+
+    public void PlacePiece(int x, int y, int color)
+    {
+        Vector2 pos = GetVectorByCoordinate(x, y);
+        GameObject o = Instantiate(piece[color-1], pos, gameObject.transform.rotation, gameObject.transform);
+        pieces[x, y] = o;
+        data[x, y] = color;
+        nodes[x, y].GetComponent<Highlight>().placed = true;
+        nodes[x, y].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
     }
 
     private void ApplyPlace(object[] obj)
@@ -90,41 +105,39 @@ public class Board : MonoBehaviour
             coy = (int)obj[1];
         }
         Debug.Log("Message:" + cox + " " + coy);
-        Vector2 pos = GetVectorByCoordinate(cox, coy);
-        GameObject o = Instantiate(piece[turn % 2], pos, gameObject.transform.rotation, gameObject.transform);
-        pieces[cox, coy] = o;
-        data[cox, coy] = turn % 2 + 1;
-        nodes[cox, coy].GetComponent<Highlight>().placed = true;
-        nodes[cox, coy].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+        gameRule.Place(cox, coy, turn % 2 + 1);
         gameRule.CheckByCoordinate(cox, coy);
         gameController.Change();
-        turn++;
         
     }
 
     public int GetPieceByCoordinate(int x, int y)
     {
-        if (x < 0 || x > 18 || y < 0 || y > 18)
+        if (!IsLeagl(x,y))
             return -1;
         return data[x, y];
     }
 
     public GameObject GetPieceObjectByCoordinate(int x, int y)
     {
-        if (x < 0 || x > 18 || y < 0 || y > 18)
+        if (!IsLeagl(x, y))
             return null;
         return pieces[x, y];
     }
 
     public GameObject GetNodeByCoordinate(int x, int y)
     {
-        if (x < 0 || x > 18 || y < 0 || y > 18)
+        if (!IsLeagl(x, y))
             return null;
         return nodes[x, y];
     }
 
     public void RemovePiece(int x, int y)
     {
+        if (!IsLeagl(x, y))
+            return;
+        if (data[x, y] == 0)
+            return;
         Destroy(pieces[x, y]);
         nodes[x, y].GetComponent<Highlight>().Reset();
         data[x, y] = 0;
