@@ -66,7 +66,7 @@ public class Board : MonoBehaviour
             for(int j = 0; j != 19; ++j)
             {
                 Vector2 pos = GetVectorByCoordinate(i, j);
-                GameObject obj = Instantiate(node, pos, gameObject.transform.rotation);
+                GameObject obj = (GameObject)Instantiate(node, pos, gameObject.transform.rotation);
                 obj.transform.parent = gameObject.transform;
                 obj.GetComponent<Highlight>().Init(i,j);
                 nodes[i,j] = obj;
