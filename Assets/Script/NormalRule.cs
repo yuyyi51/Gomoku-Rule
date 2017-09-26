@@ -32,7 +32,7 @@ public class NormalRule : Rule
         max = t > max ? t : max;
         t = MoveByDelta(x, y, 1, 1, color) + MoveByDelta(x, y, -1, -1, color) + 1;
         max = t > max ? t : max;
-        t = MoveByDelta(x, y, 1, -11, color) + MoveByDelta(x, y, -1, 1, color) + 1;
+        t = MoveByDelta(x, y, 1, -1, color) + MoveByDelta(x, y, -1, 1, color) + 1;
         max = t > max ? t : max;
         if( max >= 5 )
         {
