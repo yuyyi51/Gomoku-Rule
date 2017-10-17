@@ -18,10 +18,11 @@ public class Board : MonoBehaviour
     public int turn = 0;
     private GameObject[,] nodes = new GameObject[19,19];
     private GameObject[,] pieces = new GameObject[19,19];
-    private int[,] data = new int[19, 19];
+    public int[,] data = new int[19, 19];
     private Rule gameRule;
     public int ruleNum;
     private bool operable ;
+    public bool holded = false;
     public enum PicecColor { Black = 1, White = 2 };
 
     //Begin from top-left
@@ -39,6 +40,7 @@ public class Board : MonoBehaviour
         }
         Array.Clear(data, 0, data.Length);
         operable = true;
+        holded = false;
         turn = 0;
     }
     public Vector2 GetVectorByCoordinate(int x, int y)
@@ -86,6 +88,9 @@ public class Board : MonoBehaviour
             case 4:
                 gameObject.AddComponent<ItemRule>();
                 break;
+            case 5:
+                gameObject.AddComponent<AIRule>();
+                break;
             default:
                 gameObject.AddComponent<NormalRule>();
                 break;
@@ -108,7 +113,7 @@ public class Board : MonoBehaviour
         nodes[x, y].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
     }
 
-    private void ApplyPlace(object[] obj)
+    public void ApplyPlace(object[] obj)
     {
         if (!operable)
             return;
@@ -122,6 +127,7 @@ public class Board : MonoBehaviour
             coy = (int)obj[1];
         }
         Debug.Log("Message:" + cox + " " + coy);
+        Debug.Log(data.ToString());
         gameRule.Place(cox, coy, turn % 2 + 1);
         gameRule.CheckByCoordinate(cox, coy);
         gameController.Change();
@@ -176,5 +182,6 @@ public class Board : MonoBehaviour
     public void Hold()
     {
         operable = false;
+        holded = true;
     }
 }

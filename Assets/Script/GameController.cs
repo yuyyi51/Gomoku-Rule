@@ -79,15 +79,20 @@ public class GameController : MonoBehaviour
             {
                 Debug.Log("Black Win");
                 gameRule.Hold();
-                gameRule.Reset();
+                //gameRule.Reset();
             }
             else if (a == 2)
             {
                 Debug.Log("White Win");
                 gameRule.Hold();
-                gameRule.Reset();
+                //gameRule.Reset();
             }
 
+        }
+        if(gameRule.Holded())
+        {
+            if (Input.GetKey(KeyCode.Return))
+                gameRule.Reset();
         }
         changed = false;
 
