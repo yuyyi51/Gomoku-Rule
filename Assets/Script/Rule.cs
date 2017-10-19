@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class Rule : MonoBehaviour
 {
     protected Board board ;
-    protected const string ruleName = "";
+    public string ruleName ;
     public virtual void Place(int x, int y, int color)
     {
         if(board.GetPieceByCoordinate(x,y) == 0)

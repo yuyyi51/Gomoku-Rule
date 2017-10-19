@@ -150,6 +150,8 @@ public class Evaluator
                     maxscore = scoreboard[i, j];
             }
         }
+        if (maxscore == 0)
+            return null;
         for (int i = 0; i < len1; ++i)
         {
             for (int j = 0; j < len2; ++j)

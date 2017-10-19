@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class AIRule : Rule
 {
-    new protected const string ruleName = "人机模式";
+    //new protected const string ruleName = "AI";
     Evaluator evaluator;
     int num = 0;
+    public int scolor = 1;
     protected int MoveByDelta(int x, int y, int dx, int dy, int co)
     {
         int re = 0;
@@ -50,7 +51,7 @@ public class AIRule : Rule
             }
 
         }
-        if(board.turn % 2 == 1)
+        if(board.turn % 2 == scolor)
             AIPlacePiece();
     }
 
@@ -61,13 +62,31 @@ public class AIRule : Rule
 
     private void AIPlacePiece()
     {
-        evaluator = new Evaluator(board.data, 2, 1);
+        object[] obj = new object[2];
+        if (board.empty)
+        {
+            obj = new object[2];
+            obj[0] = 9;
+            obj[1] = 9;
+            board.ApplyPlace(obj);
+            return;
+        }
+        if (board.turn % 2 == 1)
+        {
+            evaluator = new Evaluator(board.data, 2, 1);
+        }
+        else
+        {
+            evaluator = new Evaluator(board.data, 1, 2);
+        }
         List<KeyValuePair<int, int>> li = evaluator.Evaluate();
+        if (li == null)
+            return;
         System.Random rand = new System.Random();
         KeyValuePair<int, int> pair = li[rand.Next(li.Count)];
-        object[] obj = new object[2];
         obj[0] = pair.Key;
         obj[1] = pair.Value;
+        Debug.Log(pair.Key + " " + pair.Value);
         board.ApplyPlace(obj);
     }
 
@@ -76,5 +95,26 @@ public class AIRule : Rule
         int re = num;
         num = 0;
         return re;
+    }
+    void Start()
+    {
+        ruleName = "AI";
+    }
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            board.Reset();
+            scolor = 1 - scolor;
+            if (scolor == 0)
+                AIPlacePiece();
+        }
+    }
+    public override void Reset()
+    {
+        base.Reset();
+        scolor = 1 - scolor;
+        if (scolor == 0)
+            AIPlacePiece();
     }
 }

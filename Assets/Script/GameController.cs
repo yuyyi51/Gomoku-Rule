@@ -7,7 +7,11 @@ public class GameController : MonoBehaviour
     private int _whiteScore;
     private int _blackScore;
     private Rule _gameRule;
-
+    public void ResetScore()
+    {
+        _whiteScore = 0;
+        _blackScore = 0;
+    }
     public int whiteScore
     {
         get
