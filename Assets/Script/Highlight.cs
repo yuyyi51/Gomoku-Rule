@@ -5,10 +5,10 @@ using UnityEngine;
 public class Highlight : MonoBehaviour
 {
     private bool _init = false ;
-    private int colorTrans = 1;
+    private int colorTrans = 1;     //用来控制亮暗的变量
     private int x;
     private int y;
-    public bool placed = false;
+    public bool placed = false;     //该格点是否有棋子
     public void Init(int n1, int n2)
     {
         if (_init)
@@ -55,7 +55,7 @@ public class Highlight : MonoBehaviour
         object[] obj = new object[2];
         obj[0] = x;
         obj[1] = y;
-        SendMessageUpwards("ApplyPlace", obj, SendMessageOptions.RequireReceiver);
+        SendMessageUpwards("ApplyPlace", obj, SendMessageOptions.RequireReceiver);      //向board的ApplyPlace函数发送消息
     }
     // Update is called once per frame
     void Update()

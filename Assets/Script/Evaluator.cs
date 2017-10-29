@@ -11,10 +11,10 @@ public class Evaluator
         WIN = 0, ALIVE4 = 1, DDEAD4 = 2, D4A3 = 3, DALIVE3 = 4, D3A3 = 5, DEAD4 = 6,
         JDEAD4 = 7, ALIVE3 = 8, JALIVE3 = 9, DALIVE2 = 10, ALIVE2 = 11, JALIVE2 = 12, DEAD3 = 13,
         JDEAD3 = 14, DEAD2 = 15, JDEAD2 = 16, OTHER = 17, MEANINGLESS = 18
-    };
-    public static Dictionary<string, Rank> Figure;
-    public static int[] Score;
-    public static int[,] DeltaDirection;
+    };                                              //各种棋型的等级
+    public static Dictionary<string, Rank> Figure;  //保存各种棋型的关联容器
+    public static int[] Score;                      //各种棋型对应的分数
+    public static int[,] DeltaDirection;            //需要考虑的四个不同方向
     static Evaluator()
     {
         #region Figure_Init
@@ -103,24 +103,24 @@ public class Evaluator
         };
         #endregion
     }
-    public static Rank CheckRank(string str)
+    public static Rank CheckRank(string str)        //查看某个棋型的等级
     {
         if (Figure.ContainsKey(str))
             return Figure[str];
         else
             return Rank.OTHER;
     }
-    public static int CheckScore(Rank r)
+    public static int CheckScore(Rank r)            //查看某个等级的分数
     {
         return Score[(int)r];
     }
-    public int[,] chessboard;
-    public int[,] scoreboard;
+    public int[,] chessboard;                       //保存棋局
+    public int[,] scoreboard;                       //评分记录
     private int len1;
     private int len2;
     private int self;
     private int oppo;
-    public Evaluator(int[,] board, int s, int o)
+    public Evaluator(int[,] board, int s, int o)    //构造函数 参数：当前的棋局，己方棋子，对方棋子
     {
         self = s;
         oppo = o;
@@ -129,7 +129,7 @@ public class Evaluator
         chessboard = (int[,])board.Clone();
         scoreboard = new int[len1, len2];
     }
-    public List<KeyValuePair<int, int>> Evaluate()
+    public List<KeyValuePair<int, int>> Evaluate()  //计算整个棋局不同位置的得分，返回所有最优选择
     {
         List<KeyValuePair<int, int>> re = new List<KeyValuePair<int, int>>();
         int maxscore = -1;
@@ -139,10 +139,6 @@ public class Evaluator
         {
             for (int j = 0; j < len2; ++j)
             {
-
-                //scoreboard[i, j] = PointEvaluate(i, j);
-                //to do
-                //
                 score = PointEvaluate(i, j, self, oppo);
                 score2 = PointEvaluate(i, j, oppo, self) - 1;
                 scoreboard[i, j] = score > score2 ? score : score2;
@@ -162,12 +158,12 @@ public class Evaluator
         }
         return re;
     }
-    public int PointEvaluate(int x, int y, int s, int o)
+    public int PointEvaluate(int x, int y, int s, int o)    //对某一点进行评分
     {
         if (chessboard[x, y] != 0)
             return 0;
         int re = 0;
-        int[] buffer = new int[19];
+        int[] buffer = new int[19];     //存储不同方向上各种棋型出现的情况，用于进行复合型棋型的评分
         Rank r;
         Rank maxrank;
         string line;
@@ -177,7 +173,7 @@ public class Evaluator
 
         for (int i = 0; i != 4; ++i)
         {
-            line = GetLine(x, y, DeltaDirection[i, 0], DeltaDirection[i, 1], s, o, out pos);
+            line = GetLine(x, y, DeltaDirection[i, 0], DeltaDirection[i, 1], s, o, out pos);    //获取该方向上的可能构成棋型的棋子
             score = LineEvaluate(line, pos, out r);
             buffer[(int)r]++;
             if (score > maxscore)
@@ -186,7 +182,7 @@ public class Evaluator
                 maxrank = r;
             }
         }
-        r = EvaluateRankForMutiLines(buffer);
+        r = EvaluateRankForMutiLines(buffer);   //对复合型棋型评分
         score = CheckScore(r);
         if (score > maxscore)
         {
@@ -197,7 +193,7 @@ public class Evaluator
 
         return re;
     }
-    private Rank EvaluateRankForMutiLines(int[] buffer)
+    private Rank EvaluateRankForMutiLines(int[] buffer)     //对复合型棋型进行评分
     {
         if (buffer[(int)Rank.ALIVE3] + buffer[(int)Rank.JALIVE3] >= 1 &&
             buffer[(int)Rank.DEAD4] + buffer[(int)Rank.JDEAD4] >= 1)
@@ -222,8 +218,10 @@ public class Evaluator
             return Rank.DALIVE2;
         }
         return Rank.OTHER;
-    }
-    public string GetLine(int x, int y, int dx, int dy, int s, int o, out int pos)
+    }      
+      
+    //获取某个方向上可能构成棋型的棋子，返回构成的字符串，用out返回该坐标所在的位置
+    public string GetLine(int x, int y, int dx, int dy, int s, int o, out int pos)  
     {
         string re = "";
         int tx = x;
@@ -264,11 +262,11 @@ public class Evaluator
         }
         return re;
     }
-    public bool IsLegal(int x, int y)
+    public bool IsLegal(int x, int y)   //检查是否越界
     {
         return x >= 0 && x < len1 && y >= 0 && y < len2;
     }
-    public int LineEvaluate(string line, int pos, out Rank maxrank)
+    public int LineEvaluate(string line, int pos, out Rank maxrank) //对一条线上的所有可能棋型进行评分，返回最优棋型的分值，并用out参数返回其等级
     {
         int re = 0;
         Rank r;

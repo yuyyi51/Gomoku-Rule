@@ -9,27 +9,27 @@ public class Board : MonoBehaviour
     private Vector2 TL;             //top-left
     private Vector2 TR;             //top-right
     private Vector2 DL;             //down-left
-    public GameObject point1;
+    public GameObject point1;       //处于棋盘三个角上的空对象，用于计算棋盘格点的坐标，由unity初始化
     public GameObject point2;
     public GameObject point3;
     private bool _init = false;
-    public GameObject node;
-    public GameObject[] piece;
+    public GameObject node;         //棋盘格点对象的预置体
+    public GameObject[] piece;      //棋子对象的预置体
     public int turn;
-    private GameObject[,] nodes = new GameObject[19,19];
-    private GameObject[,] pieces = new GameObject[19,19];
-    public int[,] data;
-    public Rule gameRule;
-    public int ruleNum;
-    private bool operable ;
-    public bool holded;
+    private GameObject[,] nodes = new GameObject[19,19];    //存放格点对象的数组
+    private GameObject[,] pieces = new GameObject[19,19];   //存放棋子对象的数组
+    public int[,] data;             //存储逻辑棋盘数据的数组
+    public Rule gameRule;           //游戏规则
+    public int ruleNum;             //当前游戏规则编号
+    private bool operable ;         //棋盘是否处于可用状态
+    public bool holded;             //游戏是否禁止当前玩家操作
     public enum PicecColor { Black = 1, White = 2 };
-    public bool empty;
+    public bool empty;              //棋盘是否为空
 
     //Begin from top-left
     //Left to right
     //Top to down    
-    public void Reset()
+    public void Reset()     //出于各种原因需要重置棋盘时调用的函数
     {
         for(int i = 0; i != 19; ++i)
         {
@@ -45,7 +45,7 @@ public class Board : MonoBehaviour
         turn = 0;
         empty = true;
     }
-    public Vector2 GetVectorByCoordinate(int x, int y)
+    public Vector2 GetVectorByCoordinate(int x, int y)  //查找某个格点的世界坐标
     {
         Vector2 v2 = new Vector2();
         v2.x = TL.x + (TR - TL).x / 18.0f * x;
@@ -58,7 +58,7 @@ public class Board : MonoBehaviour
         return x >= 0 && x < 19 && y >= 0 && y < 19;
     }
 
-    public void Init()
+    public void Init()  //初始化棋盘、规则、格点对象等
     {
         if (_init)
             return;
@@ -71,31 +71,22 @@ public class Board : MonoBehaviour
             for(int j = 0; j != 19; ++j)
             {
                 Vector2 pos = GetVectorByCoordinate(i, j);
-                GameObject obj = Instantiate(node, pos, gameObject.transform.rotation,transform);
+                GameObject obj = Instantiate(node, pos, gameObject.transform.rotation,transform);   //生成格点对象
                 //obj.transform.parent = gameObject.transform;
                 obj.GetComponent<Highlight>().Init(i,j);
                 nodes[i,j] = obj;
             }
         }
-        switch(ruleNum)
+        switch(ruleNum)     //决定游戏规则
         {
             case 1:
-                gameObject.AddComponent<NormalRule>();
+                gameObject.AddComponent<NormalRule>();  //玩家本地对战
                 break;
             case 2:
-                gameObject.AddComponent<AIRule>();
+                gameObject.AddComponent<AIRule>();      //人机对战
                 break;
             case 3:
-                gameObject.AddComponent<AIDRule>();
-                break;
-            case 4:
-                gameObject.AddComponent<ExplosiveRule>();
-                break;
-            case 5:
-                gameObject.AddComponent<NewRule>();
-                break;
-            case 6:
-                gameObject.AddComponent<ItemRule>();
+                gameObject.AddComponent<AIDRule>();     //人机混合对战
                 break;
             default:
                 gameObject.AddComponent<NormalRule>();
@@ -112,10 +103,10 @@ public class Board : MonoBehaviour
         turn = 0;
     }
 
-    public void PlacePiece(int x, int y, int color)
+    public void PlacePiece(int x, int y, int color)     //放置棋子
     {
         Vector2 pos = GetVectorByCoordinate(x, y);
-        GameObject o = (GameObject)Instantiate(piece[color-1], pos, gameObject.transform.rotation);
+        GameObject o = Instantiate(piece[color-1], pos, gameObject.transform.rotation);
         o.transform.parent = gameObject.transform ;
         pieces[x, y] = o;
         data[x, y] = color;
@@ -123,7 +114,7 @@ public class Board : MonoBehaviour
         nodes[x, y].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
     }
 
-    public void ApplyPlace(object[] obj)
+    public void ApplyPlace(object[] obj)    //用于其他对象通过消息机制调用的请求防止棋子函数
     {
         if (!operable)
             return;
@@ -226,15 +217,6 @@ public class Board : MonoBehaviour
                 break;
             case 3:
                 gameObject.AddComponent<AIDRule>();
-                break;
-            case 4:
-                gameObject.AddComponent<ExplosiveRule>();
-                break;
-            case 5:
-                gameObject.AddComponent<NewRule>();
-                break;
-            case 6:
-                gameObject.AddComponent<ItemRule>();
                 break;
             default:
                 gameObject.AddComponent<NormalRule>();
