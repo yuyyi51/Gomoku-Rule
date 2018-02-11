@@ -88,6 +88,12 @@ public class Board : MonoBehaviour
             case 3:
                 gameObject.AddComponent<AIDRule>();     //人机混合对战
                 break;
+            case 4:
+                gameObject.AddComponent<ExplosiveRule>();   //连成几个子会消失的模式
+                break;
+            case 5:
+                gameObject.AddComponent<ItemRule>();    //加入了奇怪道具的模式
+                break;
             default:
                 gameObject.AddComponent<NormalRule>();
                 break;
@@ -192,6 +198,16 @@ public class Board : MonoBehaviour
             ruleNum = 3;
             ChangeRule();
         }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            ruleNum = 4;
+            ChangeRule();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            ruleNum = 5;
+            ChangeRule();
+        }
     }
 
     public void Hold()
@@ -217,6 +233,12 @@ public class Board : MonoBehaviour
                 break;
             case 3:
                 gameObject.AddComponent<AIDRule>();
+                break;
+            case 4:
+                gameObject.AddComponent<ExplosiveRule>();
+                break;
+            case 5:
+                gameObject.AddComponent<ItemRule>();
                 break;
             default:
                 gameObject.AddComponent<NormalRule>();
